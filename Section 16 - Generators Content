@@ -1,0 +1,247 @@
+
+const colors = ['red', 'green', 'blue'];
+let other = [];
+
+for (let color of colors) {
+	other.push(color);
+}
+
+other;
+
+-------------------------------------------------
+const numbers = [1,2,3,4];
+
+let total = 0;
+for (let number of numbers) {
+	total += number;
+}
+
+-------------------------------------------------
+function* numbers() {
+	yield;
+}
+
+const gen = numbers();
+get.next(); //{"done":false}
+get.next(); //{"done":true}
+------------------------------------------------
+function* shopping() {
+
+	// stuff on the sidewalk
+
+	// walking down the sidewalk
+
+	// go into the store with cash
+	const stuffFromStore = yield 'cash';
+
+	// walking back home
+	return stuffFromStore;
+}
+
+// stuff the store
+const gen = shopping();
+gen.next(); // {"value":"cash","done":false}
+// walked into the store
+// walking up and down the aisles..
+// purchase our stuff
+
+gen.next('groceries'); // {"value":"groceries","done":true}
+------------------------------------------------
+function* colors() {
+	yield 'red';
+	yield 'blue'; 
+	yield 'green';
+}
+	
+const myColors = [];
+for (let color of colors()) {
+	myColors.push(color);
+}
+
+myColors;
+
+------------------------------------------------
+const engineeringTeam = {
+	size: 3,
+	department: 'Engineering',
+	lead: 'Jill',
+	manager: 'Alex',
+	engineer: 'Dave'
+};
+
+function* TeamIterator(team) {
+	yield team.lead;
+	yield team.manager;
+	yield team.engineer;
+	const testingTeamGenerator = TestingTeamIterator(team.testingTeam);
+	yield* testingTeamGenerator;
+
+}
+
+function* TestingTeamIterator(team) {
+	yield team.lead;
+	yield team.tester;
+}
+
+const names = [];
+for (let name of TeamIterator(engineeringTeam)) {
+	names.push(name);
+}
+
+names;
+------------------------------------------------
+const testingTeam = {
+ 	lead: 'Amanda',
+  tester: 'Bill'
+}
+
+const engineeringTeam = {
+  testingTeam,
+	size: 3,
+	department: 'Engineering',
+	lead: 'Jill',
+	manager: 'Alex',
+	engineer: 'Dave'
+};
+
+function* TeamIterator(team) {
+	yield team.lead;
+	yield team.manager;
+	yield team.engineer;
+  const testingTeamGenerator = TestingTeamIterator(team.testingTeam);
+	yield* testingTeamGenerator;
+
+}
+
+function* TestingTeamIterator(team) {
+	yield team.lead;
+	yield team.tester;
+}
+
+const names = [];
+for (let name of TeamIterator(engineeringTeam)) {
+	names.push(name);
+}
+
+names;
+------------------------------------------------
+const testingTeam = {
+ 	lead: 'Amanda',
+  tester: 'Bill',
+  [Symbol.iterator]: function* () {
+		yield this.lead;
+		yield this.tester;
+	}
+}
+
+const engineeringTeam = {
+  testingTeam,
+	size: 3,
+	department: 'Engineering',
+	lead: 'Jill',
+	manager: 'Alex',
+	engineer: 'Dave'
+};
+
+function* TeamIterator(team) {
+	yield team.lead;
+	yield team.manager;
+	yield team.engineer;
+	yield* testingTeam;
+}
+
+function* TestingTeamIterator(team) {
+	yield team.lead;
+	yield team.tester;
+}
+
+const names = [];
+for (let name of TeamIterator(engineeringTeam)) {
+	names.push(name);
+}
+
+names;
+------------------------------------------------
+const testingTeam = {
+ 	lead: 'Amanda',
+  tester: 'Bill',
+  [Symbol.iterator]: function* () {
+		yield this.lead;
+		yield this.tester;
+	}
+}
+
+const engineeringTeam = {
+  testingTeam,
+	size: 3,
+	department: 'Engineering',
+	lead: 'Jill',
+	manager: 'Alex',
+	engineer: 'Dave',
+  [Symbol.iterator]: function* () {
+		yield this.lead;
+		yield this.manager;
+    yield this.engineer;
+    yield* this.testingTeam;
+	}
+  
+};
+
+function* TestingTeamIterator(team) {
+	yield team.lead;
+	yield team.tester;
+}
+
+const names = [];
+for (let name of engineeringTeam) {
+	names.push(name);
+}
+
+names;
+------------------------------------------------
+class Comment {
+    constructor(content, children) {
+		this.content = content;
+		this.children = children;
+	}
+}
+
+const children = [
+	  new Comment('good comment', []),
+  	new Comment('bad comment', []),
+    new Comment('meh', []),
+];
+
+const tree = new Comment('Great post!', children);
+
+tree;
+------------------------------------------------
+class Comment {
+    constructor(content, children) {
+		this.content = content;
+		this.children = children;
+	}
+  
+  *[Symbol.iterator]() {
+  	yield this.content;
+		for( let child of this.children) {
+			yield* child;
+  	}
+	}
+}
+
+const children = [
+	  new Comment('good comment', []),
+  	new Comment('bad comment', []),
+    new Comment('meh', []),
+];
+
+const tree = new Comment('Great post!', children);
+
+const values = [];
+
+for(let value of tree){
+    values.push(value); 
+}
+
+values;
